@@ -6,88 +6,88 @@ from scipy.spatial.distance import cdist
 from scipy.optimize import linear_sum_assignment
 import ot
 
-# 1. --- Simulation de données ---
+# 1. --- Data Simulation ---
 
-def ech_X(n, d, loi="normale", params=None):
+def generate_data(n, d, distribution="normal", params=None):
     """
-    Génère des données aléatoires selon la loi spécifiée.
+    Generates random data according to the specified distribution.
     
     Args:
-        n (int): Nombre de points à générer.
-        d (int): Dimension des points.
-        loi (str): La loi de distribution (par défaut "normale").
-        params (dict): Paramètres supplémentaires pour la loi (par exemple, moyenne, covariance).
+        n (int): Number of points to generate.
+        d (int): Dimension of the points.
+        distribution (str): The type of distribution (default is "normal").
+        params (dict): Additional parameters for the distribution (e.g., mean, covariance).
     
     Returns:
-        np.array: Tableau des données générées.
+        np.array: Array of generated data.
     """
-    if loi == "normale":
+    if distribution == "normal":
         return np.random.normal(loc=params.get('mean', 0), scale=params.get('std', 1), size=(n, d))
-    elif loi == "uniforme":
+    elif distribution == "uniform":
         return np.random.uniform(low=params.get('low', 0), high=params.get('high', 1), size=(n, d))
-    elif loi == "banane":
+    elif distribution == "banana":
         return np.column_stack([np.sin(np.linspace(0, 2*np.pi, n)), np.linspace(0, 1, n)])
     else:
-        raise ValueError("Lois supportées : 'normale', 'uniforme', 'banane'")
+        raise ValueError("Supported distributions: 'normal', 'uniform', 'banana'")
 
 
-# 2. --- Calcul du transport optimal ---
+# 2. --- Optimal Transport Calculation ---
 
-def transport_optimal(X, Y, dist_type='euclidean'):
+def optimal_transport(X, Y, dist_type='euclidean'):
     """
-    Calcule le transport optimal entre deux ensembles de points X et Y en utilisant l'algorithme de transport optimal de type transport de masse.
+    Computes the optimal transport between two sets of points X and Y using the mass transport algorithm.
     
     Args:
-        X (np.array): Ensemble de points source (n, d).
-        Y (np.array): Ensemble de points cible (m, d).
-        dist_type (str): Type de distance ('euclidean' par défaut).
+        X (np.array): Source set of points (n, d).
+        Y (np.array): Target set of points (m, d).
+        dist_type (str): Distance type ('euclidean' by default).
         
     Returns:
-        tuple: Le coût optimal, et le transport (matrice de correspondances).
+        tuple: The optimal cost and the transport matrix (matching matrix).
     """
     dist_matrix = cdist(X, Y, metric=dist_type)
     row_ind, col_ind = linear_sum_assignment(dist_matrix)
     cost = dist_matrix[row_ind, col_ind].sum()
     
-    # Créer une matrice de transport avec des poids pour chaque correspondance
+    # Create a transport matrix with weights for each match
     transport_matrix = np.zeros_like(dist_matrix)
     transport_matrix[row_ind, col_ind] = 1
     
     return cost, transport_matrix
 
 
-def transport_optimal_median(X, Y, dist_type='euclidean'):
+def optimal_transport_median(X, Y, dist_type='euclidean'):
     """
-    Calcule la médiane des points par transport optimal entre deux ensembles X et Y.
+    Computes the median of points via optimal transport between two sets X and Y.
     
     Args:
-        X (np.array): Ensemble de points source (n, d).
-        Y (np.array): Ensemble de points cible (m, d).
-        dist_type (str): Type de distance ('euclidean' par défaut).
+        X (np.array): Source set of points (n, d).
+        Y (np.array): Target set of points (m, d).
+        dist_type (str): Distance type ('euclidean' by default).
     
     Returns:
-        np.array: La médiane obtenue par transport optimal.
+        np.array: The median obtained via optimal transport.
     """
-    _, transport_matrix = transport_optimal(X, Y, dist_type)
+    _, transport_matrix = optimal_transport(X, Y, dist_type)
     median = transport_matrix.mean(axis=0)
     return median
 
 
-# 3. --- Visualisation des résultats ---
+# 3. --- Result Visualization ---
 
-def plot_transport(X, Y, transport_matrix, title="Transport Optimal"):
+def plot_transport(X, Y, transport_matrix, title="Optimal Transport"):
     """
-    Visualise le transport optimal entre deux ensembles de points X et Y.
+    Visualizes the optimal transport between two sets of points X and Y.
     
     Args:
-        X (np.array): Ensemble de points source (n, d).
-        Y (np.array): Ensemble de points cible (m, d).
-        transport_matrix (np.array): Matrice de transport de correspondance.
-        title (str): Titre du graphique.
+        X (np.array): Source set of points (n, d).
+        Y (np.array): Target set of points (m, d).
+        transport_matrix (np.array): Matching transport matrix.
+        title (str): Title for the plot.
     """
     plt.figure(figsize=(8, 6))
-    plt.scatter(X[:, 0], X[:, 1], label="Points Source", color='blue')
-    plt.scatter(Y[:, 0], Y[:, 1], label="Points Cible", color='red')
+    plt.scatter(X[:, 0], X[:, 1], label="Source Points", color='blue')
+    plt.scatter(Y[:, 0], Y[:, 1], label="Target Points", color='red')
     
     for i in range(len(X)):
         for j in range(len(Y)):
@@ -99,75 +99,75 @@ def plot_transport(X, Y, transport_matrix, title="Transport Optimal"):
     plt.show()
 
 
-def plot_median(X, Y, median, title="Médiane par Transport Optimal"):
+def plot_median(X, Y, median, title="Median by Optimal Transport"):
     """
-    Affiche la médiane obtenue par transport optimal sur les points.
+    Displays the median obtained by optimal transport on the points.
     
     Args:
-        X (np.array): Ensemble de points source (n, d).
-        Y (np.array): Ensemble de points cible (m, d).
-        median (np.array): La médiane obtenue.
-        title (str): Titre du graphique.
+        X (np.array): Source set of points (n, d).
+        Y (np.array): Target set of points (m, d).
+        median (np.array): The median obtained.
+        title (str): Title for the plot.
     """
     plt.figure(figsize=(8, 6))
-    plt.scatter(X[:, 0], X[:, 1], label="Points Source", color='blue')
-    plt.scatter(Y[:, 0], Y[:, 1], label="Points Cible", color='red')
-    plt.scatter(median[0], median[1], color='green', label='Médiane', marker='x')
+    plt.scatter(X[:, 0], X[:, 1], label="Source Points", color='blue')
+    plt.scatter(Y[:, 0], Y[:, 1], label="Target Points", color='red')
+    plt.scatter(median[0], median[1], color='green', label='Median', marker='x')
     
     plt.title(title)
     plt.legend()
     plt.show()
 
 
-# 4. --- Calcul des quantiles ---
+# 4. --- Quantile Calculation ---
 
 def quantiles(data, q):
     """
-    Calcule les quantiles d'un ensemble de données.
+    Calculates the quantiles of a dataset.
     
     Args:
-        data (np.array): Données d'entrée.
-        q (list): Liste des quantiles à calculer (par exemple, [0.25, 0.5, 0.75]).
+        data (np.array): Input data.
+        q (list): List of quantiles to calculate (e.g., [0.25, 0.5, 0.75]).
     
     Returns:
-        np.array: Les quantiles demandés.
+        np.array: The requested quantiles.
     """
     return np.percentile(data, [x * 100 for x in q], axis=0)
 
 
-# 5. --- Autres utilitaires ---
+# 5. --- Other Utilities ---
 
-def boule(n, d, rayon=1):
+def ball(n, d, radius=1):
     """
-    Génère une boule de dimension d et de rayon spécifié.
+    Generates points inside a ball of dimension d and a specified radius.
     
     Args:
-        n (int): Nombre de points à générer.
-        d (int): Dimension de la boule.
-        rayon (float): Rayon de la boule.
+        n (int): Number of points to generate.
+        d (int): Dimension of the ball.
+        radius (float): Radius of the ball.
     
     Returns:
-        np.array: Tableau des points générés dans la boule.
+        np.array: Array of points inside the ball.
     """
     points = np.random.randn(n, d)
-    points = points / np.linalg.norm(points, axis=1)[:, np.newaxis]  # Normaliser pour être dans la boule unitaire
-    points = points * np.random.uniform(0, rayon, n)[:, np.newaxis]  # Appliquer un rayon
+    points = points / np.linalg.norm(points, axis=1)[:, np.newaxis]  # Normalize to be within the unit ball
+    points = points * np.random.uniform(0, radius, n)[:, np.newaxis]  # Apply the radius
     return points
 
 
-# 6. --- Distance Wasserstein ---
+# 6. --- Wasserstein Distance ---
 
-def dist(source, cible, N):
-    """Calcule la distance Wasserstein entre deux distributions."""
+def wasserstein_distance(source, target, N):
+    """Calculates the Wasserstein distance between two distributions."""
     a, b = np.ones(N), np.ones(N)
-    M = ot.dist(source, cible)
+    M = ot.dist(source, target)
     return np.sqrt(ot.emd2(a, b, M))
 
 
-# 7. --- Génération de données gaussiennes ---
+# 7. --- Gaussian Data Generation ---
 
 def Z(t, N):
-    """Génère une distribution gaussienne multivariée centrée."""
+    """Generates a centered multivariate Gaussian distribution."""
     mean = [t, t]
     cov = [[1, 0], [0, 1]]
     return np.random.multivariate_normal(mean, cov, N)
