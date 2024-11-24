@@ -1,5 +1,7 @@
 # utils.py
 
+# Do not forget to instal POT (pip install pot)
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -140,11 +142,11 @@ def plot_data(datasets):
     plt.suptitle("Visualization of Distributions", fontweight="bold", fontsize=16)
     
     for i, data in enumerate(datasets):
-        pl.subplot(num_rows, num_columns, i + 1)  # Position subplot
-        pl.scatter(data[:, 0], data[:, 1], color=colors[i % len(colors)], alpha=0.7)
-        pl.title(f'Dataset {i + 1}', fontsize=12)
-        pl.axis('equal')  # Ensure equal scaling on both axes
-        pl.grid(True, linestyle='--', alpha=0.6)  # Optional grid for better visualization
+        plt.subplot(num_rows, num_columns, i + 1)  # Position subplot
+        plt.scatter(data[:, 0], data[:, 1], color=colors[i % len(colors)], alpha=0.7)
+        plt.title(f'Dataset {i + 1}', fontsize=12)
+        plt.axis('equal')  # Ensure equal scaling on both axes
+        plt.grid(True, linestyle='--', alpha=0.6)  # Optional grid for better visualization
 
     plt.tight_layout(rect=[0, 0, 1, 0.96])  # Adjust layout to fit the title
     plt.show()
