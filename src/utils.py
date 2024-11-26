@@ -123,7 +123,7 @@ def optimal_transport(X, Y, dist_type='euclidean'):
 
 # 3. --- Result Visualization ---
 
-def plot_data(datasets):
+def plot_data(datasets, names=None, plot_title=None):
     """
     Plots a list of datasets, each represented as a 2D array.
     
@@ -132,6 +132,12 @@ def plot_data(datasets):
     """
     assert len(datasets) > 0, "The dataset list must contain at least one dataset."
     
+    if names is not None :
+        assert len(datasets) == len(names)
+
+    
+    title = plot_title if plot_title is not None else "Visualization of Distributions"
+    
     num_datasets = len(datasets)
     colors = ['blue', 'red', 'green', 'orange', 'purple', 'brown']  # Extended color palette
     num_columns = min(3, num_datasets)  # Up to 3 plots per row
@@ -139,12 +145,13 @@ def plot_data(datasets):
 
     # Create a figure with adequate size
     plt.figure(figsize=(5 * num_columns, 5 * num_rows))
-    plt.suptitle("Visualization of Distributions", fontweight="bold", fontsize=16)
+    plt.suptitle(title, fontweight="bold", fontsize=16)
     
     for i, data in enumerate(datasets):
+        name = names[i] if names is not None else f'Dataset {i + 1}'
         plt.subplot(num_rows, num_columns, i + 1)  # Position subplot
         plt.scatter(data[:, 0], data[:, 1], color=colors[i % len(colors)], alpha=0.7)
-        plt.title(f'Dataset {i + 1}', fontsize=12)
+        plt.title(name, fontsize=12)
         plt.axis('equal')  # Ensure equal scaling on both axes
         plt.grid(True, linestyle='--', alpha=0.6)  # Optional grid for better visualization
 
