@@ -121,6 +121,47 @@ def optimal_transport(X, Y, dist_type='euclidean'):
 
 
 
+
+def stochastic_gradient_descent(v_initial: np.ndarray, y: np.ndarray, gamma: float, iterations: int):
+    """
+    Stochastic gradient descent algorithm for semi-discrete optimal transport.
+    
+    Args:
+        v_initial (np.ndarray): Initial dual variables (size n).
+        y (np.ndarray): Data (n, d).
+        gamma (float): Learning rate.
+        iterations (int): Number of iterations.
+    
+    Returns:
+        Tuple[List[np.ndarray], List[float]]: Dual variables and list of weights.
+    """
+    v_current = v_initial
+    v, W = [v_current], [0]
+    
+    for m in range(1, iterations + 1):
+        # Randomly generate a point X_m on the unit ball
+        R = np.random.uniform(0, 1)
+        W_vec = np.random.normal(0, 1, size=(y.shape[1], 1))
+        norm_W = np.linalg.norm(W_vec, axis=0)
+        X_m = (R * W_vec / norm_W).T
+        
+        # Compute the stochastic estimate
+        l = np.dot(X_m, y.T) - v_current
+        hat_k_m = np.max(l) + np.mean(v_current)
+        W.append(hat_k_m / m + (m - 1) / m * W[-1])
+        
+        # Gradient
+        grad = np.ones_like(v_current) / len(v_current)
+        grad[np.argmax(l)] -= 1
+        
+        # Update dual variables
+        v_current -= gamma / m * grad
+        v.append(v_current)
+    
+    return v, W
+
+
+
 # 3. --- Result Visualization ---
 
 def plot_data(datasets, names=None, plot_title=None):
@@ -289,22 +330,60 @@ def optimal_transport_median(X, Y, transport_matrix):
 
 
 
-
-def quantiles(data, q):
+def quantiles(quantile1, quantile2, data, v_final):
     """
-    Calculates the quantiles of a dataset.
-    
+    Calculates the corresponding quantile of the target data with respect to a unit ball.
+
     Args:
-        data (np.array): Input data.
-        q (list): List of quantiles to calculate (e.g., [0.25, 0.5, 0.75]).
-    
+        quantile1 (float): First coordinate of the quantile.
+        quantile2 (float): Second coordinate of the quantile.
+        data (np.ndarray): Target data.
+        v_final (List[np.ndarray]): Dual variables for each iteration of the descent.
+
     Returns:
-        np.array: The requested quantiles.
+        Tuple[np.ndarray, int]: Data point corresponding to the quantile and its index.
     """
-    return np.percentile(data, [x * 100 for x in q], axis=0)
+    x = np.array([[quantile1], [quantile2]])  # Target point
+    l = []
+
+    # Use the last iteration of v_final
+    v_last = v_final[-1]
+    for k in range(len(data)):
+        # Calculate the intermediate value for each point
+        l.append(np.dot(x.T, data[k]) - v_last[k])
+
+    # Find the index of the maximum
+    s = np.argmax(l)
+    return data[s], s
 
 
-# 5. --- Wasserstein Distance ---
+
+def circle(radius, num_points=1000):
+    """
+    Generates the coordinates of a circular contour with a given radius.
+
+    Parameters:
+    - radius (float): The radius of the circle.
+    - num_points (int): The number of points to approximate the contour.
+
+    Returns:
+    - np.ndarray: Points on the circle as a 2D array.
+    """
+    theta = np.linspace(0, 2 * np.pi, num_points)  # Angles for the circle
+    radii = np.arange(0.01, radius + 0.01, 0.01)  # Increasing radii
+    points = []  # List to store the points
+
+    for r in radii:
+        for angle in theta:
+            x = r * np.cos(angle)
+            y = r * np.sin(angle)
+            points.append([x, y])  # Adds each point (x, y) as a list
+
+    return np.array(points)  # Converts the list to a 2D array
+
+
+
+# Bonus --- Wasserstein Distance ---
 
 def wasserstein_distance(source, target, N):
     """Calculates the Wasserstein distance between two distributions."""
