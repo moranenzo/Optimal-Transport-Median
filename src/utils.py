@@ -14,51 +14,51 @@ import ot
 def generate_data(n, distribution="uniform", l=1):
     """
     Generates random data according to the specified distribution in dimension 2.
-    
+
     Args:
         n (int): Number of points to generate.
         distribution (str): The type of distribution (default is "uniform").
         l (float): Radius for the uniform distribution (only relevant for "uniform").
-    
+
     Returns:
         np.array: Array of generated data.
     """
     d = 2  # Dimension (fixed here to 2)
-    
+
     if distribution == "normal":
         # Parameters for the normal distribution (mean and standard deviation)
         mean = 0  # Default mean
         std = 1   # Default standard deviation
         return np.random.normal(loc=mean, scale=std, size=(n, d))
-        
+
     elif distribution == "uniform":
         num_theta = 5*int(np.sqrt(n-1))
         theta = np.linspace (0 , 2 * np.pi , num_theta )
         rad = np.linspace(0.01, 1, int( (n-1)/num_theta )+1 )
-        
+
         z = np . array ([[0 , 0]])
         for r in rad:
             for t in theta:
                 x = r * np . cos (t)
                 y = r * np . sin (t)
                 z = np . vstack ((z , np . column_stack ((x , y)) ))
-                
+
         return z[:n]
 
     elif distribution == "banana":
         # Generation of coordinates X and Phi
         X = -1 + 2 * np.random.rand(n)  # X between -1 and 1
         Phi = 2 * np.pi * np.random.rand(n)  # Phi between 0 and 2π
-        
+
         # Calculation of radii R
         R = 0.2 * np.random.rand(n) * (1 + (1 - np.abs(X)) / 2)  # Radius adjusted according to X
-        
+
         # Calculation of coordinates y according to the "banana" distribution
         z = np.column_stack((X + R * np.cos(Phi), X**2 + R * np.sin(Phi)))
-        
+
         return z
-    
-    
+
+
     else:
         raise ValueError("Supported distributions: 'normal', 'uniform', 'banana'")
 
@@ -67,31 +67,30 @@ def generate_data(n, distribution="uniform", l=1):
 def process_ansur_data(file_path):
     """
     Transforms and cleans ANSUR data (Male or Female).
-    
+
     Args:
         file_path (str): Path to the CSV file containing ANSUR data.
-    
+
     Returns:
         np.array: Cleaned data array with columns for height (cm) and weight (kg).
     """
     # Read the ANSUR dataset
     ansur = pd.read_csv(file_path, sep=",", encoding="ISO-8859-1")
-    
+
     # Select and rename relevant columns
     data = ansur[["Heightin", "weightkg"]].rename(columns={"Heightin": "Height (inches)", "weightkg": "Weight (kg)"})
-    
+
     # Convert height from inches to centimeters
     data["Height (inches)"] *= 2.54
     data.rename(columns={"Height (inches)": "Height (cm)"}, inplace=True)
-    
+
     # Convert weight from pounds to kilograms (divide by 10)
     data["Weight (kg)"] /= 10
-    
+
     # Remove the last row (possible outlier)
     data = data.iloc[:-1]
-    
-    return np.array(data)
 
+    return np.array(data)
 
 
 
@@ -100,23 +99,23 @@ def process_ansur_data(file_path):
 def optimal_transport(X, Y, dist_type='euclidean'):
     """
     Computes the optimal transport between two sets of points X and Y using the mass transport algorithm.
-    
+
     Args:
         X (np.array): Source set of points (n, d).
         Y (np.array): Target set of points (m, d).
         dist_type (str): Distance type ('euclidean' by default).
-        
+
     Returns:
         tuple: The optimal cost and the transport matrix (matching matrix).
     """
     dist_matrix = cdist(X, Y, metric=dist_type)
     row_ind, col_ind = linear_sum_assignment(dist_matrix)
     cost = dist_matrix[row_ind, col_ind].sum()
-    
+
     # Create a transport matrix with weights for each match
     transport_matrix = np.zeros_like(dist_matrix)
     transport_matrix[row_ind, col_ind] = 1
-    
+
     return cost, transport_matrix
 
 
@@ -125,39 +124,39 @@ def optimal_transport(X, Y, dist_type='euclidean'):
 def stochastic_gradient_descent(v_initial: np.ndarray, y: np.ndarray, gamma: float, iterations: int):
     """
     Stochastic gradient descent algorithm for semi-discrete optimal transport.
-    
+
     Args:
         v_initial (np.ndarray): Initial dual variables (size n).
         y (np.ndarray): Data (n, d).
         gamma (float): Learning rate.
         iterations (int): Number of iterations.
-    
+
     Returns:
         Tuple[List[np.ndarray], List[float]]: Dual variables and list of weights.
     """
     v_current = v_initial
     v, W = [v_current], [0]
-    
+
     for m in range(1, iterations + 1):
         # Randomly generate a point X_m on the unit ball
         R = np.random.uniform(0, 1)
         W_vec = np.random.normal(0, 1, size=(y.shape[1], 1))
         norm_W = np.linalg.norm(W_vec, axis=0)
         X_m = (R * W_vec / norm_W).T
-        
+
         # Compute the stochastic estimate
         l = np.dot(X_m, y.T) - v_current
         hat_k_m = np.max(l) + np.mean(v_current)
         W.append(hat_k_m / m + (m - 1) / m * W[-1])
-        
+
         # Gradient
         grad = np.ones_like(v_current) / len(v_current)
         grad[np.argmax(l)] -= 1
-        
+
         # Update dual variables
         v_current -= gamma / m * grad
         v.append(v_current)
-    
+
     return v, W
 
 
