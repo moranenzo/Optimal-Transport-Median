@@ -24,7 +24,9 @@ This work was conducted during a two-month internship (June–July 2024) within 
 PY-Optimal-Transport-Median
 ├── README.md : Overview and usage instructions.
 ├── docs/ : Reference materials (papers, reports, etc.).
-├── data/ : Dataset used (ANSUR II), accompanied by descriptive analysis.
+├── data/ : Dataset and its detailed analysis.
+│   ├── analysis/ : Descriptive analysis of the database variables.
+│   └── raw/ : Database used (ANSUR II Male and Female)
 ├── src/ : Jupyter notebooks and Python scripts.
 │   ├── utils.py : Reusable utility functions.
 │   └── notebooks : Four Jupyter notebooks illustrating key processes.
@@ -64,14 +66,14 @@ Ensure you have Python 3.8 or newer installed.
 ---
 
 ## 📊 **Dataset**
-The **ANSUR II** dataset, located in the `data/` folder, serves as the primary resource for this project.  
+The **ANSUR II** dataset, located in the `data/raw` folder, serves as the primary resource for this project.  
 - **Source**: [ANSUR II Dataset](https://www.openicpsr.org/openicpsr/project/120028/version/V1/view).  
 - **Description**: Anthropometric data from military populations. A descriptive analysis of the dataset is provided in `data/README.md`.
 
 ---
 
 ## 📈 **How to Use**
-Navigate to the `src/notebooks/` directory to explore:
+Navigate to the `src` directory to explore:
 - **Detailed visualizations**:
   - Distributions of the data.
   - Optimal transport processes between measures.
@@ -85,7 +87,7 @@ To run a notebook:
    ```bash
    jupyter notebook
    ```
-2. Open the desired notebook from `src/notebooks`.
+2. Open the desired notebook from `src`.
 
 ---
 
