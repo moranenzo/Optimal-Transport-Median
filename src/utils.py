@@ -64,6 +64,31 @@ def generate_data(n, distribution="uniform", l=1):
 
 
 
+def circle(radius, num_points=1000):
+    """
+    Generates the coordinates of a circular contour with a given radius.
+
+    Parameters:
+    - radius (float): The radius of the circle.
+    - num_points (int): The number of points to approximate the contour.
+
+    Returns:
+    - np.ndarray: Points on the circle as a 2D array.
+    """
+    theta = np.linspace(0, 2 * np.pi, num_points)  # Angles for the circle
+    radii = np.arange(0.01, radius + 0.01, 0.01)  # Increasing radii
+    points = []  # List to store the points
+
+    for r in radii:
+        for angle in theta:
+            x = r * np.cos(angle)
+            y = r * np.sin(angle)
+            points.append([x, y])  # Adds each point (x, y) as a list
+
+    return np.array(points)  # Converts the list to a 2D array
+
+
+
 def process_ansur_data(file_path):
     """
     Transforms and cleans ANSUR data (Male or Female).
@@ -354,31 +379,6 @@ def quantiles(quantile1, quantile2, data, v_final):
     # Find the index of the maximum
     s = np.argmax(l)
     return data[s], s
-
-
-
-def circle(radius, num_points=1000):
-    """
-    Generates the coordinates of a circular contour with a given radius.
-
-    Parameters:
-    - radius (float): The radius of the circle.
-    - num_points (int): The number of points to approximate the contour.
-
-    Returns:
-    - np.ndarray: Points on the circle as a 2D array.
-    """
-    theta = np.linspace(0, 2 * np.pi, num_points)  # Angles for the circle
-    radii = np.arange(0.01, radius + 0.01, 0.01)  # Increasing radii
-    points = []  # List to store the points
-
-    for r in radii:
-        for angle in theta:
-            x = r * np.cos(angle)
-            y = r * np.sin(angle)
-            points.append([x, y])  # Adds each point (x, y) as a list
-
-    return np.array(points)  # Converts the list to a 2D array
 
 
 
