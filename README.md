@@ -27,7 +27,7 @@ PY-Optimal-Transport-Median
 ├── data/ : Dataset used (ANSUR II), accompanied by descriptive analysis.
 ├── src/ : Jupyter notebooks and Python scripts.
 │   ├── utils.py : Reusable utility functions.
-│   └── notebooks/ : Four Jupyter notebooks illustrating key processes.
+│   └── notebooks : Four Jupyter notebooks illustrating key processes.
 ├── results/ : Outputs (e.g., figures, graphs).
 └── reports/ : Final documents.
     ├── internship_report.pdf
