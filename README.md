@@ -67,7 +67,7 @@ The results showcase detailed visualizations of transport processes, quantile co
 <!-- CONTEXT -->
 <h2 id="context">🌍 Context</h2>
 <p>
-This work was conducted during a two-month internship (June–July 2024) within the **Image Optimisation et Probabilities Team** at the **Institut de Mathématiques de Bordeaux**, supervised by **Professor Jérémie BIGOT**.
+This work was conducted during a two-month internship (June–July 2024) within the <strong>Image Optimisation et Probabilities Team</strong> at the <strong>Institut de Mathématiques de Bordeaux</strong>, supervised by <strong>Professor Jérémie BIGOT</strong>.
 </p>
 
 
@@ -76,6 +76,7 @@ This work was conducted during a two-month internship (June–July 2024) within 
 <pre>
 PY-Optimal-Transport-Median
 ├── README.md        # Overview and usage instructions.
+├── social_preview.png        # Social Preview of the repo.
 ├── docs/        # Reference materials (papers, reports, etc.).
 ├── data/        # Dataset and its detailed analysis.
 │   ├── analysis/        # Descriptive analysis of the database variables.
