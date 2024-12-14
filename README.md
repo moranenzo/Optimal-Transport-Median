@@ -13,7 +13,7 @@
   <p>
     Define a multivariate median for datasets where the median is not explicitly known.
     <br />
-    <a href="https://github.com/moranenzo/PY-Music-Genre-Classifier"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/moranenzo/PY-Optimal-Transport-Median"><strong>Explore the docs »</strong></a>
     <br />
   </p>
 </div>
