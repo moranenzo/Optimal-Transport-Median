@@ -4,7 +4,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/moranenzo/PY-Optimal-Transport-Median">
+  <a href="https://github.com/moranenzo/Optimal-Transport-Median">
     <img src="social_preview.png">
   </a>
 
@@ -13,7 +13,7 @@
   <p>
     Define a multivariate median for datasets where the median is not explicitly known.
     <br />
-    <a href="https://github.com/moranenzo/PY-Optimal-Transport-Median"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/moranenzo/Optimal-Transport-Median"><strong>Explore the docs »</strong></a>
     <br />
   </p>
 </div>
@@ -74,7 +74,7 @@ This work was conducted during a two-month internship (June–July 2024) within 
 <!-- REPOSITORY STRUCTURE -->
 <h2 id="repository-structure">📁 Repository Structure</h2>
 <pre>
-PY-Optimal-Transport-Median
+Optimal-Transport-Median
 ├── README.md        # Overview and usage instructions.
 ├── social_preview.png        # Social Preview of the repo.
 ├── docs/        # Reference materials (papers, reports, etc.).
@@ -111,10 +111,10 @@ PY-Optimal-Transport-Median
 <h3 id="installation">🛠️ Installation</h3>
 <ol>
   <li>Clone the repo:
-    <pre><code>git clone https://github.com/moranenzo/PY-Optimal-Transport-Median.git</code></pre>
+    <pre><code>git clone https://github.com/moranenzo/Optimal-Transport-Median.git</code></pre>
   </li>
   <li>Navigate to the project directory:
-    <pre><code>cd PY-Optimal-Transport-Median</code></pre>
+    <pre><code>cd Optimal-Transport-Median</code></pre>
   </li>
 </ol>
 
@@ -159,7 +159,7 @@ PY-Optimal-Transport-Median
   <strong>Enzo MORAN</strong> - <a href="https://www.linkedin.com/in/moranenzo/" target="_blank">LinkedIn</a> - <a href="mailto:enzo.moran@ensae.fr">enzo.moran@ensae.fr</a></li>
 </p>
 
-<p>Project Link: <a href="https://github.com/moranenzo/PY-Music-Genre-Classifier" target="_blank">https://github.com/moranenzo/PY-Music-Genre-Classifier</a></p>
+<p>Project Link: <a href="https://github.com/moranenzo/Music-Genre-Classifier" target="_blank">https://github.com/moranenzo/Music-Genre-Classifier</a></p>
 
 
 
